@@ -1,0 +1,53 @@
+package id.syizuril.app.mastsee_favorite.db;
+
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+import android.database.Cursor;
+
+import java.util.List;
+
+import id.syizuril.app.mastsee_favorite.models.MovieResult;
+
+@Dao
+public interface MovieFavoriteDao {
+
+    @Query("SELECT COUNT(*) FROM " + MovieResult.TABLE_NAME)
+    int count();
+
+    @Insert
+    void insert(MovieResult movieResult);
+
+    @Insert
+    long insertMovie(MovieResult movieResult);
+
+    @Insert
+    long[] insertAll(MovieResult[] movieResult);
+
+    @Update
+    void update(MovieResult movieResult);
+
+    @Delete
+    void delete(MovieResult movieResult);
+
+    @Query("DELETE FROM movie_table")
+    void deleteAllMoviesFavorite();
+
+    @Query("SELECT * FROM " + MovieResult.TABLE_NAME)
+    LiveData<List<MovieResult>> getAllMoviesFavorite();
+
+    @Query("SELECT * FROM " + MovieResult.TABLE_NAME)
+    Cursor selectAll();
+
+    @Query("SELECT * FROM " + MovieResult.TABLE_NAME + " WHERE "+ MovieResult.COLUMN_ID + " = :id")
+    Cursor selectById(long id);
+
+    @Query("SELECT * FROM movie_table WHERE _id LIKE :value")
+    LiveData<List<MovieResult>> getAllMoviesFavoriteById(Long value);
+
+    @Query("DELETE FROM " + MovieResult.TABLE_NAME + " WHERE " + MovieResult.COLUMN_ID +" = :id")
+    int deleteById(long id);
+}
