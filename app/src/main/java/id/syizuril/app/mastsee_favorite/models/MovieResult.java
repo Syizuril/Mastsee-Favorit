@@ -124,6 +124,10 @@ public class MovieResult implements Parcelable {
         return "https://image.tmdb.org/t/p/w600_and_h900_bestv2/"+posterPath;
     }
 
+    public String getPosterPathAlt(){
+        return posterPath;
+    }
+
     public String getOriginalLanguage() {
         return originalLanguage;
     }
@@ -134,6 +138,10 @@ public class MovieResult implements Parcelable {
 
     public String getBackdropPath() {
         return "https://image.tmdb.org/t/p/w533_and_h300_bestv2/"+backdropPath;
+    }
+
+    public String getBackdropPathAlt(){
+        return backdropPath;
     }
 
     public String getOverview() {

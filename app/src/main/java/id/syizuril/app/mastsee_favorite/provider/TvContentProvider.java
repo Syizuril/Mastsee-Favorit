@@ -16,20 +16,20 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 
 import id.syizuril.app.mastsee_favorite.db.FavoriteDatabase;
-import id.syizuril.app.mastsee_favorite.db.MovieFavoriteDao;
-import id.syizuril.app.mastsee_favorite.models.MovieResult;
+import id.syizuril.app.mastsee_favorite.db.TvShowFavoriteDao;
+import id.syizuril.app.mastsee_favorite.models.TvShowsResult;
 
-public class MovieContentProvider extends ContentProvider {
-    public static final String AUTHORITY = "id.syizuril.app.mastsee.provider.MovieContentProvider";
-    public static final Uri URI_MOVIE = Uri.parse("content://"+AUTHORITY+"/"+ MovieResult.TABLE_NAME);
+public class TvContentProvider extends ContentProvider {
+    public static final String AUTHORITY = "id.syizuril.app.mastsee.provider.TvContentProvider";
+    public static final Uri URI_TV = Uri.parse("content://"+AUTHORITY+"/"+ TvShowsResult.TABLE_NAME);
 
-    private static final int CODE_MOVIE_DIR = 1;
-    private static final int CODE_MOVIE_ITEM = 2;
+    private static final int CODE_MOVIE_DIR = 3;
+    private static final int CODE_MOVIE_ITEM = 4;
     private static final UriMatcher MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
-        MATCHER.addURI(AUTHORITY, MovieResult.TABLE_NAME, CODE_MOVIE_DIR);
-        MATCHER.addURI(AUTHORITY, MovieResult.TABLE_NAME +"/*",CODE_MOVIE_ITEM);
+        MATCHER.addURI(AUTHORITY, TvShowsResult.TABLE_NAME, CODE_MOVIE_DIR);
+        MATCHER.addURI(AUTHORITY, TvShowsResult.TABLE_NAME +"/*",CODE_MOVIE_ITEM);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class MovieContentProvider extends ContentProvider {
             if(context == null){
                 return null;
             }
-            MovieFavoriteDao movieFavoriteDao = FavoriteDatabase.getInstance(context).movieFavoriteDao();
+            TvShowFavoriteDao tvShowFavoriteDao = FavoriteDatabase.getInstance(context).tvShowFavoriteDao();
             final Cursor cursor;
             if(code == CODE_MOVIE_DIR){
-                cursor = movieFavoriteDao.selectAll();
+                cursor = tvShowFavoriteDao.selectAll();
             }else{
-                cursor = movieFavoriteDao.selectById(ContentUris.parseId(uri));
+                cursor = tvShowFavoriteDao.selectById(ContentUris.parseId(uri));
             }
             cursor.setNotificationUri(context.getContentResolver(), uri);
             return cursor;
@@ -65,9 +65,9 @@ public class MovieContentProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
         switch (MATCHER.match(uri)){
             case CODE_MOVIE_DIR:
-                return "vnd.android.cursor.dir/"+AUTHORITY+"."+MovieResult.TABLE_NAME;
+                return "vnd.android.cursor.dir/"+AUTHORITY+"."+TvShowsResult.TABLE_NAME;
             case CODE_MOVIE_ITEM:
-                return "vnd.android.cursor.item/"+AUTHORITY+"."+MovieResult.TABLE_NAME;
+                return "vnd.android.cursor.item/"+AUTHORITY+"."+TvShowsResult.TABLE_NAME;
             default:
                 throw new IllegalArgumentException("Unknown URI: "+uri);
         }
@@ -82,13 +82,13 @@ public class MovieContentProvider extends ContentProvider {
                 if(context == null){
                     return null;
                 }
-                final long id = FavoriteDatabase.getInstance(context).movieFavoriteDao().insertMovie(MovieResult.fromContentValues(values));
+                final long id = FavoriteDatabase.getInstance(context).tvShowFavoriteDao().insertMovie(TvShowsResult.fromContentValues(values));
                 context.getContentResolver().notifyChange(uri, null);
                 return ContentUris.withAppendedId(uri, id);
             case CODE_MOVIE_ITEM:
                 throw new IllegalArgumentException("Invalid URI, cannot insert with ID: "+uri);
             default:
-                throw new IllegalArgumentException("Unknown URI: "+uri);
+                throw new IllegalArgumentException("Uknown URI: "+uri);
         }
     }
 
@@ -102,7 +102,7 @@ public class MovieContentProvider extends ContentProvider {
                 if(context == null){
                     return 0;
                 }
-                final int count = FavoriteDatabase.getInstance(context).movieFavoriteDao().deleteById(ContentUris.parseId(uri));
+                final int count = FavoriteDatabase.getInstance(context).tvShowFavoriteDao().deleteById(ContentUris.parseId(uri));
                 context.getContentResolver().notifyChange(uri, null);
                 return count;
             default:
@@ -126,7 +126,7 @@ public class MovieContentProvider extends ContentProvider {
             return new ContentProviderResult[0];
         }
         final FavoriteDatabase database = FavoriteDatabase.getInstance(context);
-        return database.runInTransaction(() -> MovieContentProvider.super.applyBatch(operations));
+        return database.runInTransaction(() -> TvContentProvider.super.applyBatch(operations));
     }
 
     @Override
@@ -138,15 +138,15 @@ public class MovieContentProvider extends ContentProvider {
                     return 0;
                 }
                 final FavoriteDatabase database = FavoriteDatabase.getInstance(context);
-                final MovieResult[] movieResults = new MovieResult[valuesArray.length];
+                final TvShowsResult[] tvShowsResults = new TvShowsResult[valuesArray.length];
                 for(int i=0; i<valuesArray.length; i++){
-                    movieResults[i] = MovieResult.fromContentValues(valuesArray[i]);
+                    tvShowsResults[i] = TvShowsResult.fromContentValues(valuesArray[i]);
                 }
-                return database.movieFavoriteDao().insertAll(movieResults).length;
+                return database.tvShowFavoriteDao().insertAll(tvShowsResults).length;
             case CODE_MOVIE_ITEM:
                 throw new IllegalArgumentException("Invalid URI, cannot insert with ID: " + uri);
             default:
-                throw new IllegalArgumentException("Uknown URI: "+uri);
+                throw new IllegalArgumentException("Unknown URI: "+uri);
         }
     }
 }

@@ -14,9 +14,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import id.syizuril.app.mastsee_favorite.models.MovieResult;
+import id.syizuril.app.mastsee_favorite.models.TvShowsResult;
 
-public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdapter.MovieHolder> {
+public class TvFavoriteAdapter extends RecyclerView.Adapter<TvFavoriteAdapter.MovieHolder> {
     private Cursor mCursor;
 
     @NonNull
@@ -27,16 +27,16 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MovieFavoriteAdapter.MovieHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final TvFavoriteAdapter.MovieHolder holder, int position) {
         if(mCursor.moveToPosition(position)){
-            holder.tvTitle.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieResult.COLUMN_TILE)));
+            holder.tvTitle.setText(mCursor.getString(mCursor.getColumnIndexOrThrow(TvShowsResult.COLUMN_TILE)));
             Glide.with(holder.itemView.getContext())
-                    .load(mCursor.getString(mCursor.getColumnIndexOrThrow(MovieResult.COLUMN_BACKDROP)))
+                    .load(mCursor.getString(mCursor.getColumnIndexOrThrow(TvShowsResult.COLUMN_BACKDROP)))
                     .apply(new RequestOptions().override(500,750))
                     .into(holder.imgBanner);
-            double score = mCursor.getDouble(mCursor.getColumnIndexOrThrow(MovieResult.COLUMN_VOTE_AVERAGE))/2;
+            double score = mCursor.getDouble(mCursor.getColumnIndexOrThrow(TvShowsResult.COLUMN_VOTE_AVERAGE))/2;
             holder.tvScore.setRating((float) score);
-            String time = mCursor.getString(mCursor.getColumnIndexOrThrow(MovieResult.COLUMN_RELEASE));
+            String time = mCursor.getString(mCursor.getColumnIndexOrThrow(TvShowsResult.COLUMN_RELEASE));
             String date = DateFormat.format("MMM, dd yyyy", Long.parseLong(time)).toString();
             holder.tvDate.setText(date);
         }
@@ -47,7 +47,7 @@ public class MovieFavoriteAdapter extends RecyclerView.Adapter<MovieFavoriteAdap
         return mCursor == null ? 0 : mCursor.getCount();
     }
 
-    void setMovies(Cursor cursor){
+    void setTv(Cursor cursor){
         mCursor = cursor;
         notifyDataSetChanged();
     }

@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="id.syizuril.app.mastsee_favorite">
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="id.syizuril.app.mastsee.provider.READ_WRITE" />
+    <uses-permission android:name="id.syizuril.app.mastsee.provider.READ_MOVIE"/>
+    <uses-permission android:name="id.syizuril.app.mastsee.provider.READ_TV"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

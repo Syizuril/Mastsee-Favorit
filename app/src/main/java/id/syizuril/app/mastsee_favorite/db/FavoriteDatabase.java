@@ -19,7 +19,7 @@ public abstract class FavoriteDatabase extends RoomDatabase {
 
     @SuppressWarnings("WeakerAccess")
     public abstract MovieFavoriteDao movieFavoriteDao();
-
+    @SuppressWarnings("WeakerAccess")
     public abstract TvShowFavoriteDao tvShowFavoriteDao();
 
     public static synchronized FavoriteDatabase getInstance(Context context){
